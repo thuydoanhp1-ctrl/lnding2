@@ -1,4 +1,3 @@
-import { requireAdmin } from "@/lib/auth-helpers";
 import { AdminSidebar } from "@/components/layout/AdminSidebar";
 
 export default async function AdminLayout({
@@ -6,8 +5,6 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const user = await requireAdmin();
-
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <div className="flex flex-col md:flex-row gap-8">
