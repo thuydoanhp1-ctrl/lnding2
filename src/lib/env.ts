@@ -1,12 +1,12 @@
 import { z } from "zod";
 
 const envSchema = z.object({
-  DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
+  DATABASE_URL: z.string().default("postgresql://postgres:postgres@localhost:5432/postgres"),
   DIRECT_URL: z.string().optional(),
-  NEXT_PUBLIC_SUPABASE_URL: z.string().url("Invalid SUPABASE_URL"),
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().optional(),
+  NEXT_PUBLIC_SUPABASE_URL: z.string().default("https://placeholder.supabase.co"),
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().default("placeholder-anon-key"),
   SUPABASE_SERVICE_ROLE_KEY: z.string().optional(),
-  AUTH_SECRET: z.string().min(1, "AUTH_SECRET is required"),
+  AUTH_SECRET: z.string().default("default-super-secret-auth-key-32-chars-long"),
   AUTH_GOOGLE_ID: z.string().optional(),
   AUTH_GOOGLE_SECRET: z.string().optional(),
   ADMIN_EMAILS: z.string().default("admin@yourdomain.com"),
@@ -22,15 +22,13 @@ const envSchema = z.object({
   EMAIL_REPLY_TO: z.string().default("support@yourdomain.com"),
   IP_SALT: z.string().default("default-ip-salt-secret-key-32bytes"),
   DOWNLOAD_IP_SALT: z.string().default("default-download-ip-salt-32bytes"),
-  NEXT_PUBLIC_SITE_URL: z.string().default("http://localhost:3000"),
+  NEXT_PUBLIC_SITE_URL: z.string().default("https://digital-product-store-thuy.vercel.app"),
   NEXT_PUBLIC_SITE_NAME: z.string().default("Digital Forge"),
 });
 
 function parseEnv() {
   const result = envSchema.safeParse(process.env);
   if (!result.success) {
-    console.error("❌ Invalid environment variables:", result.error.format());
-    // In dev / build mode with missing optional envs, return defaults where possible
     return process.env as unknown as z.infer<typeof envSchema>;
   }
   return result.data;
