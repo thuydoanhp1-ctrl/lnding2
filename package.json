@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "prisma:generate": "prisma generate",
@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.4",
-    "@prisma/adapter-pg": "^7.0.0",
-    "@prisma/client": "^7.0.0",
+    "@prisma/adapter-pg": "^6.4.0",
+    "@prisma/client": "^6.4.0",
     "@supabase/supabase-js": "^2.48.1",
     "@upstash/ratelimit": "^2.0.5",
     "@upstash/redis": "^1.34.4",
@@ -22,7 +22,7 @@
     "date-fns": "^4.1.0",
     "highlight.js": "^11.11.1",
     "lucide-react": "^0.475.0",
-    "next": "16.0.0",
+    "next": "^15.1.7",
     "next-auth": "5.0.0-beta.25",
     "pg": "^8.13.1",
     "react": "^19.0.0",
@@ -37,14 +37,15 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.0.7",
     "@tailwindcss/typography": "^0.5.16",
     "@types/node": "^22.13.1",
     "@types/pg": "^8.11.11",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "postcss": "^8.5.1",
-    "prisma": "^7.0.0",
-    "tailwindcss": "^4.0.0",
+    "prisma": "^6.4.0",
+    "tailwindcss": "^4.0.7",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3"
   }
