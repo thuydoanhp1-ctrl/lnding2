@@ -5,20 +5,86 @@ import { Sparkles, ShieldCheck, Zap, DownloadCloud, ArrowRight, Bot, LayoutGrid,
 
 export const revalidate = 60; // ISR cache 60s
 
-export default async function HomePage() {
-  // Fetch featured products
-  const featuredProducts = await db.product.findMany({
-    where: { status: "published" },
-    include: { variants: true, category: true },
-    orderBy: { createdAt: "desc" },
-    take: 6,
-  });
+const FALLBACK_CATEGORIES = [
+  { id: "c1", name: "AI Prompts & Agents", slug: "ai-prompts-agents", description: "Prompt engineering frameworks và AI agents tối ưu cho doanh nghiệp", order: 1 },
+  { id: "c2", name: "Notion & Productivity", slug: "notion-templates", description: "Hệ thống quản trị doanh nghiệp và theo dõi mục tiêu OKRs", order: 2 },
+  { id: "c3", name: "LUTs & Video Presets", slug: "presets-luts", description: "Preset màu điện ảnh và âm thanh chuyên nghiệp cho video", order: 3 },
+  { id: "c4", name: "Code & UI Starter Kits", slug: "code-ui-kits", description: "Source code Next.js, Flutter và boilerplate sẵn sàng deploy", order: 4 },
+];
 
-  // Fetch categories
-  const categories = await db.category.findMany({
-    where: { deletedAt: null },
-    orderBy: { order: "asc" },
-  });
+const FALLBACK_PRODUCTS = [
+  {
+    id: "p1",
+    title: "AI Flywheel Automation Masterclass - Trọn Bộ 52 AI Skills",
+    slug: "ai-flywheel-masterclass",
+    shortDescription: "Toàn bộ hệ thống 52 kỹ năng AI tự động hóa 8 giai đoạn khép kín cho doanh nghiệp.",
+    basePrice: 1990000,
+    coverImage: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80",
+    ratingAvg: 5.0,
+    salesCount: 342,
+    featured: true,
+    category: { name: "AI Prompts & Agents" },
+    variants: [
+      { id: "v1", name: "Bản Cá Nhân", price: 1990000, comparePrice: 4990000, licenseType: "personal" }
+    ]
+  },
+  {
+    id: "p2",
+    title: "Ultimate Business OS - Notion Template All-in-One",
+    slug: "ultimate-business-os",
+    shortDescription: "Không gian làm việc Notion quản trị dự án, tài chính và CRM khách hàng toàn diện.",
+    basePrice: 790000,
+    coverImage: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=800&auto=format&fit=crop&q=80",
+    ratingAvg: 4.9,
+    salesCount: 185,
+    featured: true,
+    category: { name: "Notion & Productivity" },
+    variants: [
+      { id: "v2", name: "Bản Cá Nhân", price: 790000, comparePrice: 1590000, licenseType: "personal" }
+    ]
+  },
+  {
+    id: "p3",
+    title: "Cinematic Teal & Orange LUTs Pack cho Premiere & CapCut",
+    slug: "cinematic-luts-pack",
+    shortDescription: "Bộ 25 LUTs màu điện ảnh chuyên nghiệp cho video sáng tạo nội dung triệu view.",
+    basePrice: 490000,
+    coverImage: "https://images.unsplash.com/photo-1536240478700-b869070f9279?w=800&auto=format&fit=crop&q=80",
+    ratingAvg: 4.8,
+    salesCount: 512,
+    featured: false,
+    category: { name: "LUTs & Video Presets" },
+    variants: [
+      { id: "v3", name: "Bản Cá Nhân", price: 490000, comparePrice: 990000, licenseType: "personal" }
+    ]
+  }
+];
+
+export default async function HomePage() {
+  let featuredProducts: any[] = [];
+  let categories: any[] = [];
+
+  try {
+    const [dbProducts, dbCategories] = await Promise.all([
+      db.product.findMany({
+        where: { status: "published" },
+        include: { variants: true, category: true },
+        orderBy: { createdAt: "desc" },
+        take: 6,
+      }),
+      db.category.findMany({
+        where: { deletedAt: null },
+        orderBy: { order: "asc" },
+      }),
+    ]);
+
+    featuredProducts = dbProducts.length > 0 ? dbProducts : (FALLBACK_PRODUCTS as any);
+    categories = dbCategories.length > 0 ? dbCategories : FALLBACK_CATEGORIES;
+  } catch (err) {
+    console.warn("Using fallback static products due to uninitialized DB:", err);
+    featuredProducts = FALLBACK_PRODUCTS as any;
+    categories = FALLBACK_CATEGORIES;
+  }
 
   return (
     <div className="space-y-24 pb-20">
@@ -48,7 +114,7 @@ export default async function HomePage() {
               <span>Khám Phá Cửa Hàng</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
-            <Link href="/categories/ai-prompts-agents" className="btn-secondary py-3.5 px-8 text-base">
+            <Link href="/products?category=ai-prompts-agents" className="btn-secondary py-3.5 px-8 text-base">
               <span>Xem Bộ AI Skills</span>
             </Link>
           </div>
@@ -95,7 +161,7 @@ export default async function HomePage() {
           {categories.map((cat) => (
             <Link
               key={cat.id}
-              href={`/categories/${cat.slug}`}
+              href={`/products?category=${cat.slug}`}
               className="glass-card p-6 flex flex-col justify-between group hover:border-indigo-500/50"
             >
               <div>
