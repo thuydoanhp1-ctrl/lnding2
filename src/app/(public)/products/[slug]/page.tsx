@@ -123,7 +123,7 @@ Khóa học và bộ tài nguyên **AI Automation For Business Masterclass** cun
     shortDescription: "Bộ 25 LUTs màu điện ảnh chuyên nghiệp cho video sáng tạo nội dung triệu view.",
     longDescription: `### 🎬 Nâng Cấp Chất Lượng Video Chuẩn Điện Ảnh
 
-Bộ sưu tập 25 file `.cube` LUTs màu sắc cao cấp được tinh chỉnh riêng cho:
+Bộ sưu tập 25 file .cube LUTs màu sắc cao cấp được tinh chỉnh riêng cho:
 - **Phần mềm hỗ trợ**: Adobe Premiere Pro, Final Cut Pro, DaVinci Resolve, CapCut PC & Mobile.
 - **Các hệ màu hỗ trợ**: Sony S-Log3, Canon C-Log, D-Cinelike (DJI), Rec.709 tiêu chuẩn và iPhone ProRes Log.`,
     basePrice: 490000,
